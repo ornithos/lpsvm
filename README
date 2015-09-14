@@ -1,0 +1,39 @@
+LPSVM - MSc Project
+==================================
+Alex Bird
+
+This project contains all of the code used to prototype the LPSVM algorithm. The 'Optim Ideas' folder contains all of the various investigations into alternative and distributed linear programming conducted by myself. Further work using a stochastic subgradient approach is available from David Martinez-Rego on request. Auxiliary scripts used for testing and cross validation are also available in the relevant folder.
+
+This implementation is based on some exploratory work by David Martinez-Rego. The structure is similar but the code is substantially changed and improved from the initial prototype. The algorithm is based on using an LPBoost method to optimise the SVM objective, a method proposed by John Shawe-Taylor as a possible means of optimising kernel SVM in a distributed setting.
+
+More details of the algorithm are given in the thesis.
+
+----------------------------------
+Code structure
+==================================
+
+The main calling function is lpsvm. Dependencies are shown below, with returning arrows indicate the top level control flow.
+
+                +------------------------+           +--------------------+           
+                v                        +           v                    +           
+            lpsvm +--------------------> solveLPActive +----------------> solveWeights
+              +                           +                                           
+              +----> initModels           +----> chooseInitCol                        
+              |----> initModelMatrix      |----> (pickIndependentCols)                
+              |----> solveModel           +----> createPrimalProblem                  
+              |----> newModelRow                                                      
+              |----> countSV                                                          
+              +----> kkMat                                                            
+                                                                                      
+                                                                                      
+            kkMat +-->}                                                               
+                      }kernelCache                                                    
+@kernel  +----------->}                                                               
+                                                                                      
+                                                                                      
+            predictLPSVM                                                              
+              +                                                                       
+              +---->  chunkVector                                                     
+              +---->  kkMat
+
+The functions lpsvmMNIST and lpsvmTOY2 are examples of using lpsvm on the MNIST and a toy gaussian dataset respectively.
